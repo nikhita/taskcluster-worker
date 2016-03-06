@@ -54,7 +54,7 @@ func ensureEnvironment(t *testing.T) (*runtime.Environment, engines.Engine, plug
 	engineProvider := extpoints.EngineProviders.Lookup("mock")
 	engine, err := engineProvider.NewEngine(extpoints.EngineOptions{
 		Environment: environment,
-		Log:         logger.WithField("engine", "mock"),
+		Log:         logger.WithField("engine", "hello"),
 	})
 	if err != nil {
 		t.Fatal(err.Error())

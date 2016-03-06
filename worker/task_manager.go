@@ -78,7 +78,7 @@ func newTaskManager(config *config.Config, engine engines.Engine, environment *r
 		Log:         log.WithField("component", "Plugin Manager"),
 	}
 
-	pm, err := extpoints.NewPluginManager([]string{"success"}, *m.pluginOptions)
+	pm, err := extpoints.NewPluginManager([]string{"success", "livelog"}, *m.pluginOptions)
 	if err != nil {
 		log.WithField("error", err.Error()).Warn("Error creating task manager. Could not create plugin manager")
 		return nil, err
@@ -198,7 +198,7 @@ func (m *Manager) run(task *TaskRun) {
 	defer m.deregisterTask(task)
 
 	tp := m.environment.TemporaryStorage.NewFilePath()
-	ctxt, ctxtctl, err := runtime.NewTaskContext(tp)
+	ctxt, ctxtctl, err := runtime.NewTaskContext(tp, &task.TaskClaim)
 	if err != nil {
 		log.WithField("error", err.Error()).Warn("Could not create task context")
 		panic(err)

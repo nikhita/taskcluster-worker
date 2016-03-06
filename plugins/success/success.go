@@ -35,7 +35,6 @@ type plugin struct {
 }
 
 type taskPlugin struct {
-	plugins.TaskPluginBase
 }
 
 func init() {
@@ -43,9 +42,39 @@ func init() {
 }
 
 func (plugin) NewTaskPlugin(plugins.TaskPluginOptions) (plugins.TaskPlugin, error) {
-	return taskPlugin{}, nil
+	return new(taskPlugin), nil
 }
 
-func (taskPlugin) Stopped(result engines.ResultSet) (bool, error) {
+// Prepare ignores the sandbox preparation stage.
+func (t *taskPlugin) Prepare(*runtime.TaskContext) error {
+	return nil
+}
+
+// BuildSandbox ignores the sandbox building stage.
+func (t *taskPlugin) BuildSandbox(engines.SandboxBuilder) error {
+	return nil
+}
+
+// Started ignores the stage where the sandbox has started
+func (t *taskPlugin) Started(engines.Sandbox) error {
+	return nil
+}
+
+func (t *taskPlugin) Stopped(result engines.ResultSet) (bool, error) {
 	return result.Success(), nil
+}
+
+// Finished ignores the stage where a task has been finished
+func (t *taskPlugin) Finished(success bool) error {
+	return nil
+}
+
+// Exception ignores the stage where a task is resolved exception
+func (t *taskPlugin) Exception(reason runtime.ExceptionReason) error {
+	return nil
+}
+
+// Dispose ignores the stage where resources are disposed.
+func (t *taskPlugin) Dispose() error {
+	return nil
 }

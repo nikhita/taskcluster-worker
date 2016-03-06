@@ -5,6 +5,9 @@ import (
 	"io"
 	"sync"
 
+	"github.com/taskcluster/taskcluster-client-go/queue"
+	"github.com/taskcluster/taskcluster-client-go/tcclient"
+
 	"gopkg.in/djherbis/stream.v1"
 )
 
@@ -37,6 +40,42 @@ const (
 // The TaskInfo struct exposes generic properties from a task definition.
 type TaskInfo struct {
 	// TODO: Add fields and getters to get them
+	RunId  int
+	TaskId string
+	sync.Mutex
+	definition *queue.TaskDefinitionResponse
+	claim      *queue.TaskClaimResponse
+	status     *queue.TaskStatusStructure
+	reclaim    *queue.TaskReclaimResponse
+}
+
+func (t TaskInfo) Definition() *queue.TaskDefinitionResponse {
+	return t.definition
+}
+
+func (t TaskInfo) Status() *queue.TaskStatusStructure {
+	return t.status
+}
+
+func (t TaskInfo) Credentials() *tcclient.Credentials {
+	fmt.Println("herrrre")
+	t.Lock()
+	defer t.Unlock()
+
+	fmt.Println("herrrre2")
+	if t.reclaim != nil {
+		return &tcclient.Credentials{
+			ClientId:    t.reclaim.Credentials.ClientId,
+			AccessToken: t.reclaim.Credentials.AccessToken,
+			Certificate: t.reclaim.Credentials.Certificate,
+		}
+	}
+	fmt.Println("herrrre3")
+	return &tcclient.Credentials{
+		ClientId:    t.claim.Credentials.ClientId,
+		AccessToken: t.claim.Credentials.AccessToken,
+		Certificate: t.claim.Credentials.Certificate,
+	}
 }
 
 // The TaskContext exposes generic properties and functionality related to a
@@ -63,13 +102,20 @@ type TaskContextController struct {
 }
 
 // NewTaskContext creates a TaskContext and associated TaskContextController
-func NewTaskContext(tempLogFile string) (*TaskContext, *TaskContextController, error) {
+func NewTaskContext(tempLogFile string, claim *queue.TaskClaimResponse) (*TaskContext, *TaskContextController, error) {
 	logStream, err := stream.New(tempLogFile)
 	if err != nil {
 		return nil, nil, err
 	}
 	ctx := &TaskContext{
 		logStream: logStream,
+		TaskInfo: TaskInfo{
+			claim:      claim,
+			definition: &claim.Task,
+			status:     &claim.Status,
+			TaskId:     claim.Status.TaskId,
+			RunId:      claim.RunId,
+		},
 	}
 	return ctx, &TaskContextController{ctx}, nil
 }

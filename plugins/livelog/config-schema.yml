@@ -4,11 +4,15 @@ description: |-
   LiveLog config
 type:               object
 properties:
-  liveLogExe:
-    title:          LiveLogExecutable
+  livelog:
+    title:          Live Log Configuration
     description: |-
-      The executable (.exe file) to run the livelog service
-    type:           string
+      Configuration options for the live task log.
+    type:           object
+    properties:
+      location:
+        title:          Live Log Location
+        description: |-
+          Location to store the live task log artifact.
+        type:           string
 additionalProperties: false
-required:
-  - liveLogExe

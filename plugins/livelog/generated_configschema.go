@@ -8,8 +8,12 @@ type (
 	// LiveLog config
 	config struct {
 
-		// The executable (.exe file) to run the livelog service
-		LiveLogExe string `json:"liveLogExe"`
+		// Configuration options for the live task log.
+		Livelog struct {
+
+			// Location to store the live task log artifact.
+			Location string `json:"location"`
+		} `json:"livelog"`
 	}
 )
 
@@ -22,15 +26,19 @@ var configSchema = func() runtime.CompositeSchema {
 		  "additionalProperties": false,
 		  "description": "LiveLog config",
 		  "properties": {
-		    "liveLogExe": {
-		      "description": "The executable (.exe file) to run the livelog service",
-		      "title": "LiveLogExecutable",
-		      "type": "string"
+		    "livelog": {
+		      "description": "Configuration options for the live task log.",
+		      "properties": {
+		        "location": {
+		          "description": "Location to store the live task log artifact.",
+		          "title": "Live Log Location",
+		          "type": "string"
+		        }
+		      },
+		      "title": "Live Log Configuration",
+		      "type": "object"
 		    }
 		  },
-		  "required": [
-		    "liveLogExe"
-		  ],
 		  "title": "Config",
 		  "type": "object"
 		}

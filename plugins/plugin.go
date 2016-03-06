@@ -171,37 +171,37 @@ func (PluginBase) NewTaskPlugin(TaskPluginOptions) (TaskPlugin, error) {
 type TaskPluginBase struct{}
 
 // Prepare ignores the sandbox preparation stage.
-func (TaskPluginBase) Prepare(*runtime.TaskContext) error {
+func (t *TaskPluginBase) Prepare(*runtime.TaskContext) error {
 	return nil
 }
 
 // BuildSandbox ignores the sandbox building stage.
-func (TaskPluginBase) BuildSandbox(engines.SandboxBuilder) error {
+func (t *TaskPluginBase) BuildSandbox(engines.SandboxBuilder) error {
 	return nil
 }
 
 // Started ignores the stage where the sandbox has started
-func (TaskPluginBase) Started(engines.Sandbox) error {
+func (t *TaskPluginBase) Started(engines.Sandbox) error {
 	return nil
 }
 
 // Stopped ignores the stage where the sandbox has returned a ResultSet, and
 // returns true saying the task was successful, as not to poison the water.
-func (TaskPluginBase) Stopped(engines.ResultSet) (bool, error) {
+func (t *TaskPluginBase) Stopped(engines.ResultSet) (bool, error) {
 	return true, nil
 }
 
 // Finished ignores the stage where a task has been finished
-func (TaskPluginBase) Finished(success bool) error {
+func (t *TaskPluginBase) Finished(success bool) error {
 	return nil
 }
 
 // Exception ignores the stage where a task is resolved exception
-func (TaskPluginBase) Exception(reason runtime.ExceptionReason) error {
+func (t *TaskPluginBase) Exception(reason runtime.ExceptionReason) error {
 	return nil
 }
 
 // Dispose ignores the stage where resources are disposed.
-func (TaskPluginBase) Dispose() error {
+func (t *TaskPluginBase) Dispose() error {
 	return nil
 }
