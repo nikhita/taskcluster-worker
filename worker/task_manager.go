@@ -51,6 +51,8 @@ func newTaskManager(config *config.Config, engine engines.Engine, environment *r
 		client:           queue,
 		ProvisionerId:    config.ProvisionerId,
 		WorkerGroup:      config.WorkerGroup,
+		WorkerId:         config.WorkerId,
+		WorkerType:       config.WorkerType,
 		Log:              log.WithField("component", "Queue Service"),
 		ExpirationOffset: config.QueueService.ExpirationOffset,
 	}
@@ -68,6 +70,7 @@ func newTaskManager(config *config.Config, engine engines.Engine, environment *r
 		workerGroup:   config.WorkerGroup,
 		workerId:      config.WorkerId,
 	}
+	fmt.Printf("%+v", m)
 
 	m.pluginOptions = &extpoints.PluginOptions{
 		Environment: environment,

@@ -48,6 +48,9 @@ type (
 
 		// A unique name that can be used to identify which worker instance this is (such as AWS instance id).
 		WorkerId string `json:"workerId"`
+
+		// Type of worker pool the worker belongs to.
+		WorkerType string `json:"workerType"`
 	}
 )
 
@@ -125,6 +128,11 @@ var ConfigSchema = func() runtime.CompositeSchema {
 		    "workerId": {
 		      "description": "A unique name that can be used to identify which worker instance this is (such as AWS instance id).",
 		      "title": "WorkerId",
+		      "type": "string"
+		    },
+		    "workerType": {
+		      "description": "Type of worker pool the worker belongs to.",
+		      "title": "WorkerType",
 		      "type": "string"
 		    }
 		  },

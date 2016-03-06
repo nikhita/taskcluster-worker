@@ -132,7 +132,7 @@ func (t *TaskRun) Run(pluginManager plugins.Plugin, engine engines.Engine, conte
 func (t *TaskRun) ParsePayload(pluginManager plugins.Plugin, engine engines.Engine) error {
 	var err error
 	jsonPayload := map[string]json.RawMessage{}
-	if err = json.Unmarshal(t.Definition.Payload, &jsonPayload); err != nil {
+	if err = json.Unmarshal([]byte(t.Definition.Payload), &jsonPayload); err != nil {
 		return err
 	}
 
@@ -252,7 +252,12 @@ func (t *TaskRun) StopStage() error {
 func (t *TaskRun) FinishStage() error {
 	t.log.Debug("Finishing task run")
 
-	err := t.plugin.Finished(t.resultSet.Success())
+	err := t.controller.CloseLog()
+	if err != nil {
+		t.log.WithField("error", err.Error()).Warn("Could not properly close task log")
+	}
+
+	err = t.plugin.Finished(t.resultSet.Success())
 	if err != nil {
 		t.context.LogError(fmt.Sprintf("Could not finish cleaning up task execution. %s", err))
 		return err
@@ -265,6 +270,7 @@ func (t *TaskRun) FinishStage() error {
 // Tasks that have been cancelled will not be reported as an exception as the run
 // has already been resolved.
 func (t *TaskRun) ExceptionStage(status runtime.TaskStatus, taskError error) {
+	fmt.Println(taskError)
 	var reason runtime.ExceptionReason
 	switch taskError.(type) {
 	case engines.MalformedPayloadError:
@@ -275,7 +281,13 @@ func (t *TaskRun) ExceptionStage(status runtime.TaskStatus, taskError error) {
 		reason = runtime.WorkerShutdown
 	}
 
-	err := t.plugin.Exception(reason)
+	err := t.controller.CloseLog()
+	if err != nil {
+		t.log.WithField("error", err.Error()).Warn("Could not properly close task log")
+	}
+
+	// TODO (garndt): handle when task plugins haven't been created yet
+	err = t.plugin.Exception(reason)
 	if err != nil {
 		t.log.WithField("error", err.Error()).Warn("Could not finalize task plugins as exception.")
 	}
@@ -310,11 +322,7 @@ func (t *TaskRun) ResolveTask() error {
 // DisposeStage is responsible for cleaning up resources allocated for the task execution.
 // This will involve closing all necessary files and disposing of contexts, plugins, and sandboxes.
 func (t *TaskRun) DisposeStage() {
-	err := t.controller.CloseLog()
-	if err != nil {
-		t.log.WithField("error", err.Error()).Warn("Could not properly close task log")
-	}
-	err = t.controller.Dispose()
+	err := t.controller.Dispose()
 	if err != nil {
 		t.log.WithField("error", err.Error()).Warn("Could not dispose of task context")
 	}

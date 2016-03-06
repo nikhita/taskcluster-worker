@@ -45,6 +45,11 @@ properties:
     description: |-
       A logical group for this worker to belong to, such as an AWS region.
     type:           string
+  workerType:
+    title:          WorkerType
+    description: |-
+      Type of worker pool the worker belongs to.
+    type:           string
   workerId:
     title:          WorkerId
     description: |-

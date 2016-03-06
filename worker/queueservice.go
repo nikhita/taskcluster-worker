@@ -322,6 +322,9 @@ func (q *queueService) refreshTaskQueueUrls() error {
 	}
 
 	q.Log.Debug("Refreshing Azure queue task urls")
+	fmt.Println("hiii")
+	fmt.Printf("%+v", q)
+
 	signedURLs, _, err := q.client.PollTaskUrls(q.ProvisionerId, q.WorkerType)
 	if err != nil {
 		q.Log.WithField("error", err).Warn("Error retrieving task urls.")

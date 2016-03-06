@@ -86,6 +86,7 @@ func claimTask(client queueClient, task *TaskRun, workerId string, workerGroup s
 
 	task.TaskClaim = *tcrsp
 	task.QueueClient = queue
+	task.Definition = tcrsp.Task
 
 	return nil
 }
