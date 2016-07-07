@@ -1,0 +1,63 @@
+language: go
+go:
+  - 1.5
+
+env:
+  - "GIMME_OS=linux GIMME_ARCH=amd64"
+  - "GIMME_OS=darwin GIMME_ARCH=amd64"
+  - "GIMME_OS=windows GIMME_ARCH=amd64"
+
+before_install:
+# workaround for travis-ci/gimme#25 to pick up latest version of gimme and run again
+  - curl -o gimme -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme
+  - chmod u+x gimme
+  - unset GOROOT GOTOOLDIR
+  - eval "$(./gimme 1.5)"
+  - go version
+  - go env
+# end of workaround ###
+  - go get github.com/axw/gocov/gocov
+  - go get github.com/mattn/goveralls
+  - go get golang.org/x/tools/cmd/cover
+  - go get github.com/pierrre/gotestcover
+
+install:
+  - "go get -d -v ./..."
+
+script:
+  - "go install -v ./..."
+  - "if test $GIMME_OS.$GIMME_ARCH = linux.amd64; then ${GOPATH}/bin/gotestcover -v -coverprofile=coverage.report ./...; go tool cover -func=coverage.report; fi"
+
+after_script:
+  - "$HOME/gopath/bin/goveralls -coverprofile=coverage.report -service=travis-ci"
+
+before_deploy:
+  - "source .travis_rename_releases.sh"
+
+after_script:
+  - "$HOME/gopath/bin/goveralls -coverprofile=coverage.report -service=travis-ci"
+
+notifications:
+  irc:
+    channels:
+      # encrypt the channel name so that user forks don't spam IRC
+      # decrypted version is "irc.mozilla.org#taskcluster-bots"
+      # see https://github.com/travis-ci/travis-ci/issues/1094
+    - secure: "J5xnUC1EGjSyDgklKVOCdd+8jdluyHsegbXjezSqoF2+djGXxZ4gOCciC91WEYop9zG2/dP+dlCEDoHWx/C6oYUqWtHprNRbhm8z6QXU7QedkaPyxAzcudbaQ+KgHVvZNpqHhn4mG2TrjlKPqLOjOxtuoltZQKwZf14NEyfhtnkD2NXAsRFO2twyCxnhC3sEon+HCz5ID9ghCFGYMswD6/Hl2bGLkiexuT0tRKK8t+J4Ci51PXXIPWX1XCNn/UFQVo6b7D50YIPzpXlSLp+lnUB8tQLwIYIYxUbpLgnx4Ow14yEw+P2/c4Mp0juyViRs1v4JOe6Ir2HK3+M4dUBWc2OjMRxb8v/8yjzrgZoLms6ynvYFBc0Is8PT9Y7y2rE6cvRZzL7IwY5UnJUl6zyWmp1Zq2b3ghNN6AuchRmUIOkrX/I8TZm6sv6xE3dgM5p7z0XngRXcA2pwkobf9TfrxqvdHsRCSU0UlzOHSkP7B9aJS4TQ5wR3u7/+aEBGFDXtkW8FniAEiY/lr4/cl2YPLq+0qSkCGfpamvkOpLHvJFsa+9PJBiN1aOGQsKrTFBc+FIrowEgSO2umrSIG/tLacXGZdOjDZiegkUSZg3i7JFmJpmWmLQWuy6z1IB1ZZuAJesyiBF/m03Mr34jQumHrQWBwbBTJUgC9hVgTcm7cqRQ="
+    on_success: change
+    on_failure: always
+    template:
+    - "%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
+    - 'Change view : %{compare_url}'
+    - 'Build details : %{build_url}'
+    - 'Commit message : %{commit_message}'
+
+deploy:
+  provider: releases
+  api_key:
+    secure: Cqy5JerPeWGoX2vUVEbNcSePyqDOGrE2U6TWAY98h7dXPk3gkgrFPi/vHKKl08af2Ovu5oag5dNYulzlZ2qVe9s9FD7/TLVALioCy9fkBrgMbBj4ZFtKp4FvcrlwzIakQzevEzXP2bXdKyZEioD36TvpV5RVfw2O6FcI4SnaMzvI8xEm6d0GGgVh+bLKe17Rq8+j0xqR622SZjdgeLN5b6ZKPqU1c/MS8P74rf96vEZBYR/7BfuB8NtaUS7AWL5Fejpy7JEhAxwFst3x3l4KwIs+Y4wyL6LpHXztmwiH+yutrS7sTCyEPqWai++4+fRscvd39nygYpMZ36PnjmCyW4J3F/l+oyiToA6I+I+1CzS9+jZOqMPAUMh5rPHLkG8M1eqHXcI966Ds1v7WGmfaf2wuaaV5JFZo6pUn1xDigh85+SGrfjPeXhV6pDGyA295c88MvvKhcuhjoaq8qKyHKpnYUIsgY1Hr4Q41jgAU2A8XC5y0XNSpOWXIIP9LrVT/lpdVwPYcfCsm3veagmVCLfQX82Y+mH1Sx3hKt89b3euNoMAfYSUBXS1VUylljOhxZn1+W3nzjB77IA50gBVKbgBs7+DiNHJIHYeEa1STX4kEyFXB0pdYnpPkWH8ylPma14rLQoeG/utY2q/VltKiJSxJ+tMr4hRnv5bFFXmGBWo=
+  file:
+    - "${RELEASE_FILE}"
+  on:
+    repo: taskcluster/stateless-dns-go
+    tags: true
