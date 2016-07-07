@@ -52,38 +52,20 @@ git push --tags
 Freezing Dependencies
 ---------------------
 
-We are currently using [godep](https://github.com/tools/godep) to vendor dependencies.
+We are currently using [glide](https://glide.sh) to vendor dependencies.
 
-```
-go get -u github.com/tools/godep      # install godep tool
-godep restore ./...                   # copy vendored dependencies into your GOPATH
+```sh
+# install glide tool
+go get github.com/Masterminds/glide
 
-# change versions
-cd ../jsonschema2go
-git reset --hard fa5483ebd1cf3c73374e815f0befaba6184f3090
-cd ../taskcluster-worker
+# Restore vendor/ to match glide.lock
+glide install
 
-# save changes
-godep save github.com/taskcluster/jsonschema2go/...
+# Update to latest versions listed in glide.yaml (update glide.lock)
+glide update
 
-git add Godeps/ vendor/               # add changes
-git diff --cached                     # check changes look correct
-git commit -m "Froze jsonschema2go at revision fa5483ebd1cf3c73374e815f0befaba6184f3090"
-```
-
-Updating Dependencies
----------------------
-
-The simplest is probably:
-
-```
-go get -u github.com/tools/godep      # install godep tool
-godep restore ./...                   # copy vendored dependencies into your GOPATH
-go get -u -t ./...                    # update versions
-godep save ./...                      # save changes
-git add Godeps/ vendor/               # add changes
-git diff --cached                     # check changes look correct
-git commit -m "Updated all go package dependencies to latest versions"
+# Add dependency to glide.yaml and vendor/
+glide get github.com/taskcluster/jsonschema2go
 ```
 
 Contributing
