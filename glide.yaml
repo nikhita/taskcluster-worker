@@ -1,0 +1,96 @@
+package: github.com/taskcluster/taskcluster-worker
+import:
+- package: github.com/Sirupsen/logrus
+  version: f3cfb454f4c209e6668c95216c4744b8fddb2356
+- package: github.com/cenkalti/backoff
+  version: cdf48bbc1eb78d1349cbda326a4a037f7ba565c6
+- package: github.com/cespare/cp
+  version: 165db2f241fd235aec29ba6d9b1ccd5f1c14637c
+- package: github.com/cloudfoundry-incubator/candiedyaml
+  version: 99c3df83b51532e3615f851d8c2dbb638f5313bf
+- package: github.com/davecgh/go-spew
+  version: 5215b55f46b2b919f50a1df0eaa5886afe4e3b3d
+  subpackages:
+  - spew
+- package: github.com/docopt/docopt-go
+  version: ^0.6.2
+- package: github.com/fatih/camelcase
+  version: f6a740d52f961c60348ebb109adde9f4635d7540
+- package: github.com/gedex/inflector
+  version: 91797f1712fd58f224781be1080b8613d096187e
+- package: github.com/getsentry/raven-go
+  version: dffeb57df75d6a911f00232155194e43d79d38d7
+- package: github.com/ghodss/yaml
+  version: aa0c862057666179de291b67d9f093d12b5a8473
+- package: github.com/kr/text
+  version: 7cafcd837844e784b526369c9bce262804aebc60
+- package: github.com/pborman/uuid
+  version: c55201b036063326c5b1b89ccfe45a184973d073
+- package: github.com/pmezard/go-difflib
+  version: 792786c7400a136282c1664665ae0a8db921c6c2
+  subpackages:
+  - difflib
+- package: github.com/stretchr/objx
+  version: 1a9d0bb9f541897e62256577b352fdbc1fb4fd94
+- package: github.com/stretchr/testify
+  version: d77da356e56a7428ad25149ca77381849a6a5232
+  subpackages:
+  - assert
+  - mock
+- package: github.com/taskcluster/go-got
+  version: 10e07044aea43d5559d1199a8da1b35d3d44e2c7
+- package: github.com/taskcluster/httpbackoff
+  version: f9087afc98a375b390587243d2a854bd560d7be8
+- package: github.com/taskcluster/jsonschema2go
+  version: 9f23800d3ab7d5f6cb64a21b80cf3871498f7e8c
+  subpackages:
+  - text
+- package: github.com/taskcluster/slugid-go
+  version: ebb8c41c0720cfec64716a75678bea5bf5f7a835
+  subpackages:
+  - slugid
+- package: github.com/taskcluster/stateless-dns-go
+  version: 1d943d09238cf2144e818f04a6e37f6161029fd3
+  subpackages:
+  - hostname
+- package: github.com/taskcluster/taskcluster-base-go
+  version: 17117b6af097b2a13df9ce80d4a9ef7dffcbc1c1
+  subpackages:
+  - jsontest
+- package: github.com/taskcluster/taskcluster-client-go
+  version: 0e37a2b8b0e4b7989c691675c55b609d896d9f35
+  subpackages:
+  - queue
+  - tcclient
+- package: github.com/tent/hawk-go
+  version: 8bd4a9f3b4cf4a535303c3f5ce3811475764139c
+- package: github.com/xeipuuv/gojsonpointer
+  version: e0fe6f68307607d540ed8eac07a342c33fa1b54a
+- package: github.com/xeipuuv/gojsonreference
+  version: e02fc20de94c78484cd5ffb007f8af96be030a45
+- package: github.com/xeipuuv/gojsonschema
+  version: c539bca196be50ccdd1f0bcd9076de95f9081831
+- package: golang.org/x/net
+  version: ef00b378c73f107bf44d5c9b69875255ce89b79a
+  subpackages:
+  - netutil
+- package: golang.org/x/sys
+  version: d4feaf1a7e61e1d9e79e6c4e76c6349e9cab0a03
+  subpackages:
+  - unix
+- package: golang.org/x/tools
+  version: 1727758746e7a08feaaceb9366d1468498ac2ac2
+  subpackages:
+  - go/ast/astutil
+  - imports
+- package: gopkg.in/djherbis/stream.v1
+  version: ^1.0.1
+- package: gopkg.in/tylerb/graceful.v1
+  version: ^1.2.5
+- package: gopkg.in/djherbis/buffer.v1
+  version: ^1.0.0
+- package: gopkg.in/djherbis/nio.v2
+  version: ^2.0.0
+- package: github.com/golang/lint
+- package: github.com/jonasfj/go-import-subtree
+- package: github.com/progrium/go-extpoints
